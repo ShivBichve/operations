@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker - Professional Tool</title>
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Bright Professional Color Palette 2025 */
+            --primary-blue: #2D9CDB;
+            --electric-cyan: #00D4FF;
+            --vibrant-purple: #7C3AED;
+            --bright-orange: #FF6B35;
+            --success-green: #10B981;
+            --warning-yellow: #FBBF24;
+            --text-dark: #1E293B;
+            --text-medium: #475569;
+            --text-light: #94A3B8;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFC;
+            --bg-gradient-1: #667EEA;
+            --bg-gradient-2: #764BA2;
+            --card-shadow: 0 20px 60px rgba(45, 156, 219, 0.12);
+            --hover-shadow: 0 25px 70px rgba(124, 58, 237, 0.18);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo/Badge */
+        .logo-badge {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--electric-cyan), var(--primary-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card {
+            background: var(--bg-white);
+            border-radius: 28px;
+            padding: 50px 45px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--electric-cyan) 0%, 
+                var(--primary-blue) 25%, 
+                var(--vibrant-purple) 50%, 
+                var(--bright-orange) 75%, 
+                var(--warning-yellow) 100%);
+        }
+
+        .card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-8px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--vibrant-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -1.5px;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .form-group {
+            margin-bottom: 26px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .label-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--electric-cyan), var(--primary-blue));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.05rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(45, 156, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Character counter */
+        .char-counter {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--vibrant-purple), var(--primary-blue));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .char-counter.visible {
+            opacity: 1;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 14px;
+            margin-top: 36px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 36px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-cyan));
+            color: white;
+            box-shadow: 0 10px 30px rgba(45, 156, 219, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(45, 156, 219, 0.45);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #F1F5F9, #E2E8F0);
+            color: var(--text-dark);
+            border: 2px solid #CBD5E1;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #E2E8F0, #CBD5E1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(45, 156, 219, 0.2);
+        }
+
+        /* Info box */
+        .info-box {
+            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
+            border-left: 4px solid var(--primary-blue);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .info-box p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        /* Stats/Features Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+            padding-top: 35px;
+            border-top: 2px solid #F1F5F9;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px 10px;
+            background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--electric-cyan);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 14px;
+            background: linear-gradient(135deg, var(--bright-orange), var(--warning-yellow));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, var(--vibrant-purple), var(--primary-blue));
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, var(--success-green), var(--electric-cyan));
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .stat-text {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Professional Badge */
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning-yellow), var(--bright-orange));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .badge-icon {
+            font-size: 1rem;
+        }
+
+        /* Examples section */
+        .examples {
+            margin-top: 24px;
+            padding: 20px;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border-radius: 14px;
+            border: 2px solid var(--warning-yellow);
+        }
+
+        .examples h3 {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .example-tag {
+            background: white;
+            color: var(--text-dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .example-tag:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 156, 219, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card {
+                padding: 40px 30px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.75rem;
+            }
+
+            .example-tags {
+                justify-content: center;
+            }
+        }
+
+        /* Custom SweetAlert2 Styling */
+        .swal2-popup {
+            border-radius: 24px !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            padding: 2em !important;
+        }
+
+        .swal2-title {
+            font-weight: 800 !important;
+            font-size: 1.8rem !important;
+            color: var(--text-dark) !important;
+        }
+
+        .swal2-html-container {
+            font-size: 1.1rem !important;
+            font-weight: 500 !important;
+            color: var(--text-medium) !important;
+        }
+
+        .swal2-confirm {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-cyan)) !important;
+            border-radius: 12px !important;
+            font-weight: 700 !important;
+            padding: 14px 40px !important;
+            text-transform: uppercase !important;
+            font-size: 0.9rem !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        .swal2-icon.swal2-success {
+            border-color: var(--success-green) !important;
+        }
+
+        .swal2-icon.swal2-success [class^='swal2-success-line'] {
+            background-color: var(--success-green) !important;
+        }
+
+        .swal2-icon.swal2-success .swal2-success-ring {
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+
+        .swal2-icon.swal2-error {
+            border-color: var(--bright-orange) !important;
+        }
+
+        .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+            background-color: var(--bright-orange) !important;
+        }
+
+        .swal2-icon.swal2-warning {
+            border-color: var(--warning-yellow) !important;
+            color: var(--warning-yellow) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="card">
+            <div class="header">
+                <div class="pro-badge">
+                    <span class="badge-icon">⚡</span>
+                    <span>Professional Edition</span>
+                </div>
+                <h1>Palindrome Checker</h1>
+                <p>Instantly verify if a string reads the same forwards and backwards</p>
+            </div>
+
+            <form id="palindromeForm">
+                <div class="form-group">
+                    <label for="inputString">
+                        <span class="label-icon">✎</span>
+                        Enter Your String
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="inputString" 
+                            placeholder="e.g., racecar, madam, A man a plan a canal Panama" 
+                            required
+                            autocomplete="off"
+                        >
+                        <span class="char-counter" id="charCounter">0 chars</span>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        🔍 Check Palindrome
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        🔄 Clear
+                    </button>
+                </div>
+            </form>
+
+            <!-- Stats Section -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-text">Instant Check</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✓</div>
+                    <div class="stat-text">Case Insensitive</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-text">Smart Algorithm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to check if a string is a palindrome
+            function isPalindrome(str) {
+                // Remove all non-alphanumeric characters and convert to lowercase
+                // means you can check phrases with spaces
+                const cleanStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+                
+                // Check if string is empty after cleaning
+                if (cleanStr.length === 0) {
+                    return false;
+                }
+
+                let string = "";
+
+                for(let i = cleanStr.length - 1; i >= 0; i--) {
+                    string += cleanStr[i];
+                }
+
+                if(string === cleanStr) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            // Get reversed string for display
+            function getReversedString(str) {
+                return str.split('').reverse().join('');
+            }
+
+            // Character counter
+            $('#inputString').on('input', function() {
+                const length = $(this).val().length;
+                const counter = $('#charCounter');
+                
+                if (length > 0) {
+                    counter.text(length + ' chars').addClass('visible');
+                } else {
+                    counter.removeClass('visible');
+                }
+
+                // Visual feedback
+                if ($(this).val().length > 0) {
+                    $(this).css('border-color', '#2D9CDB');
+                } else {
+                    $(this).css('border-color', '#E2E8F0');
+                }
+            });
+
+            // Form submission handler
+            $('#palindromeForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const inputString = $('#inputString').val().trim();
+                
+                // Validate input
+                if (inputString === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Input!',
+                        text: 'Please enter a string to check for palindrome',
+                        confirmButtonText: 'Got it!',
+                        confirmButtonColor: '#2D9CDB',
+                        showClass: {
+                            popup: 'animate__animated animate__bounceIn'
+                        }
+                    });
+                    return;
+                }
+                
+                // Check if palindrome
+                const result = isPalindrome(inputString);
+                const cleanedStr = inputString.replace(/[^a-z0-9]/gi, '');
+                const reversedStr = getReversedString(cleanedStr);
+                
+                if (result) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '🎉 Yes! It\'s a Palindrome!',
+                        html: `<div style="font-size: 1.1rem; line-height: 1.8;">
+                                <strong style="color: #2D9CDB; font-size: 1.3rem;">"${inputString}"</strong>
+                                <br><br>
+                                reads the same <strong style="color: #10B981;">forwards</strong> and 
+                                <strong style="color: #10B981;">backwards</strong>!
+                                <br><br>
+                                <div style="background: #F0F9FF; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                                    <small style="color: #475569;">
+                                        Cleaned: <strong>${cleanedStr.toLowerCase()}</strong><br>
+                                        Reversed: <strong>${reversedStr.toLowerCase()}</strong>
+                                    </small>
+                                </div>
+                               </div>`,
+                        confirmButtonText: 'Awesome! 🚀',
+                        confirmButtonColor: '#10B981',
+                        showClass: {
+                            popup: 'animate__animated animate__bounceIn'
+                        },
+                        width: '550px'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Not a Palindrome',
+                        html: `<div style="font-size: 1.1rem; line-height: 1.8;">
+                                <strong style="color: #2D9CDB; font-size: 1.3rem;">"${inputString}"</strong>
+                                <br><br>
+                                is <strong>not a palindrome</strong>.
+                                <br><br>
+                                <div style="background: #FEF2F2; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                                    <small style="color: #475569;">
+                                        Forward: <strong>${cleanedStr.toLowerCase()}</strong><br>
+                                        Backward: <strong>${reversedStr.toLowerCase()}</strong>
+                                    </small>
+                                </div>
+                                <br>
+                                <small style="color: #94A3B8;">Try another word or phrase!</small>
+                               </div>`,
+                        confirmButtonText: 'Try Again 🔄',
+                        confirmButtonColor: '#FF6B35',
+                        showClass: {
+                            popup: 'animate__animated animate__shakeX'
+                        },
+                        width: '550px'
+                    });
+                }
+            });
+
+            // Reset button handler
+            $('#resetBtn').on('click', function() {
+                // Add fade animation
+                $('input[type="text"]').addClass('animate__animated animate__fadeOut');
+                
+                setTimeout(function() {
+                    $('#inputString').val('');
+                    $('#charCounter').removeClass('visible');
+                    $('input[type="text"]')
+                        .removeClass('animate__animated animate__fadeOut')
+                        .addClass('animate__animated animate__fadeIn')
+                        .css('border-color', '#E2E8F0');
+                    $('#inputString').focus();
+                    
+                    setTimeout(function() {
+                        $('input[type="text"]').removeClass('animate__animated animate__fadeIn');
+                    }, 500);
+                }, 200);
+
+                // Toast notification
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: 'linear-gradient(135deg, #667EEA, #764BA2)',
+                    color: '#fff',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Form cleared! ✨'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

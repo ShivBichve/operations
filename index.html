@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String & Array Tools Hub - Professional Edition</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Modern Dark Color Palette 2025 */
+            --bg-primary: #0A0E27;
+            --bg-secondary: #131829;
+            --bg-card: #1A1F3A;
+            --bg-card-hover: #212642;
+            --accent-cyan: #00D4FF;
+            --accent-purple: #8B5CF6;
+            --accent-pink: #EC4899;
+            --accent-orange: #F59E0B;
+            --accent-green: #10B981;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border-color: #2D3548;
+            --glow-cyan: rgba(0, 212, 255, 0.15);
+            --glow-purple: rgba(139, 92, 246, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Mesh Gradient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Animated Gradient Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
+            bottom: -150px;
+            left: -150px;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 30px var(--glow-cyan);
+        }
+
+        .nav-stats {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-description {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 48px;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.6s backwards;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+            box-shadow: 0 10px 40px var(--glow-cyan);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px var(--glow-purple);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Section */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+            gap: 24px;
+        }
+
+        /* Tool Card */
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 36px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .tool-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tool-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
+        }
+
+        .tool-card:nth-child(1) { animation-delay: 0.1s; }
+        .tool-card:nth-child(2) { animation-delay: 0.2s; }
+        .tool-card:nth-child(3) { animation-delay: 0.3s; }
+        .tool-card:nth-child(4) { animation-delay: 0.4s; }
+        .tool-card:nth-child(5) { animation-delay: 0.5s; }
+        .tool-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .tool-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover .tool-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 40px var(--glow-cyan);
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .tool-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .feature-tag {
+            padding: 6px 12px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: gap 0.3s ease;
+        }
+
+        .tool-card:hover .tool-link {
+            gap: 12px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(139, 92, 246, 0.05));
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 64px 48px;
+            margin: 80px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 48px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-purple);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+                gap: 20px;
+            }
+
+            .stats-section {
+                padding: 48px 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-stats {
+                display: none;
+            }
+
+            .hero {
+                padding: 60px 0 40px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .section {
+                padding: 48px 0;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-card {
+                padding: 28px;
+            }
+
+            .stats-section {
+                padding: 40px 24px;
+                margin: 60px 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-content {
+                padding: 0 16px;
+            }
+
+            .hero {
+                padding: 48px 0 32px;
+            }
+
+            .tool-card {
+                padding: 24px;
+            }
+
+            .tool-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 2rem;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Gradient Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <div class="logo-icon">🚀</div>
+                <span>DevTools</span>
+            </div>
+            <div class="nav-stats">
+                <div class="stat-item">
+                    <span>⚡</span>
+                    <span class="stat-value">6</span>
+                    <span>Tools</span>
+                </div>
+                <div class="stat-item">
+                    <span>✨</span>
+                    <span class="stat-value">100%</span>
+                    <span>Free</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span>🎯</span>
+                <span>Professional Developer Tools</span>
+            </div>
+            <h1 class="hero-title">String & Array<br>Tools Hub</h1>
+            <p class="hero-description">
+                A comprehensive suite of modern, lightning-fast utilities for text manipulation and array operations. Built with cutting-edge web technologies for professional developers.
+            </p>
+            <div class="hero-cta">
+                <a href="#tools" class="btn btn-primary">
+                    Explore Tools
+                    <span>→</span>
+                </a>
+                <a href="#stats" class="btn btn-secondary">
+                    View Statistics
+                    <span>📊</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="section" id="tools">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">All Tools</div>
+                <h2 class="section-title">Choose Your Utility</h2>
+                <p class="section-description">
+                    Select from our collection of powerful, production-ready tools designed for efficiency and accuracy
+                </p>
+            </div>
+
+            <div class="tools-grid">
+                <!-- Anagram Checker -->
+                <a href="./anagram/index.html" class="tool-card">
+                    <div class="tool-icon">🔤</div>
+                    <h3 class="tool-title">Anagram Checker</h3>
+                    <p class="tool-description">
+                        Instantly verify if two strings are perfect anagrams with smart character sorting algorithm.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">Case Insensitive</span>
+                        <span class="feature-tag">Fast Check</span>
+                        <span class="feature-tag">Visual Feedback</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Palindrome Checker -->
+                <a href="./palindrome/index.html" class="tool-card">
+                    <div class="tool-icon">🔄</div>
+                    <h3 class="tool-title">Palindrome Checker</h3>
+                    <p class="tool-description">
+                        Check if strings read the same forwards and backwards with detailed character analysis.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">Smart Parsing</span>
+                        <span class="feature-tag">Examples Included</span>
+                        <span class="feature-tag">Instant Result</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Case Converter -->
+                <a href="./stringOperations1/index.html" class="tool-card">
+                    <div class="tool-icon">Aa</div>
+                    <h3 class="tool-title">Case Converter</h3>
+                    <p class="tool-description">
+                        Transform text to uppercase, lowercase, or toggle case with one-click copy functionality.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">3 Modes</span>
+                        <span class="feature-tag">One-Click Copy</span>
+                        <span class="feature-tag">Multi-line Support</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Text Analyzer -->
+                <a href="./stringOperations2/index.html" class="tool-card">
+                    <div class="tool-icon">📊</div>
+                    <h3 class="tool-title">Text Analyzer</h3>
+                    <p class="tool-description">
+                        Analyze text for longest words, count vowels and consonants with comprehensive statistics.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">Word Analysis</span>
+                        <span class="feature-tag">Character Count</span>
+                        <span class="feature-tag">Real-time Stats</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Array Analyzer -->
+                <a href="./arrayOperations/index.html" class="tool-card">
+                    <div class="tool-icon">🔢</div>
+                    <h3 class="tool-title">Array Analyzer</h3>
+                    <p class="tool-description">
+                        Find second largest, second smallest elements, and identify prime numbers efficiently.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">Smart Sorting</span>
+                        <span class="feature-tag">Prime Detection</span>
+                        <span class="feature-tag">Duplicate Handling</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Duplicate Remover -->
+                <a href="./removeDuplicate/index.html" class="tool-card">
+                    <div class="tool-icon">🎯</div>
+                    <h3 class="tool-title">Duplicate Remover</h3>
+                    <p class="tool-description">
+                        Remove all duplicate elements from arrays while preserving order with visual comparison.
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">Order Preserved</span>
+                        <span class="feature-tag">Stats Display</span>
+                        <span class="feature-tag">Mixed Types Support</span>
+                    </div>
+                    <div class="tool-link">
+                        Launch Tool
+                        <span>→</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Powerful Tools</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Accurate Results</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">⚡</div>
+                    <div class="stat-label">Lightning Fast</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Always Free</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">Built with ❤️ using modern web technologies</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">jQuery</a>
+                    <a href="#" class="footer-link">SweetAlert2</a>
+                    <a href="#" class="footer-link">Modern CSS</a>
+                    <a href="#" class="footer-link">ES6+</a>
+                </div>
+                <p class="footer-text">© 2025 DevTools Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

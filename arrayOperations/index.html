@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Analyzer - Professional Tool</title>
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Bright Professional Color Palette 2025 */
+            --primary-blue: #2D9CDB;
+            --electric-cyan: #00D4FF;
+            --vibrant-purple: #7C3AED;
+            --bright-orange: #FF6B35;
+            --success-green: #10B981;
+            --warning-yellow: #FBBF24;
+            --text-dark: #1E293B;
+            --text-medium: #475569;
+            --text-light: #94A3B8;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFC;
+            --bg-gradient-1: #667EEA;
+            --bg-gradient-2: #764BA2;
+            --card-shadow: 0 20px 60px rgba(45, 156, 219, 0.12);
+            --hover-shadow: 0 25px 70px rgba(124, 58, 237, 0.18);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo/Badge */
+        .logo-badge {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--electric-cyan), var(--primary-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card {
+            background: var(--bg-white);
+            border-radius: 28px;
+            padding: 50px 45px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--electric-cyan) 0%, 
+                var(--primary-blue) 25%, 
+                var(--vibrant-purple) 50%, 
+                var(--bright-orange) 75%, 
+                var(--warning-yellow) 100%);
+        }
+
+        .card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-8px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--vibrant-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -1.5px;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--text-medium);
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .form-group {
+            margin-bottom: 26px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .label-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--electric-cyan), var(--primary-blue));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.05rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(45, 156, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Element counter */
+        .element-counter {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--vibrant-purple), var(--primary-blue));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .element-counter.visible {
+            opacity: 1;
+        }
+
+        /* Info box */
+        .info-box {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border-left: 4px solid var(--warning-yellow);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-top: 14px;
+        }
+
+        .info-box p {
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            color: var(--bright-orange);
+            font-weight: 800;
+        }
+
+        /* Radio Button Options */
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 30px 0;
+        }
+
+        .option-card {
+            position: relative;
+        }
+
+        .option-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .option-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+            border: 3px solid #E2E8F0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card input[type="radio"]:checked + .option-label {
+            border-color: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-cyan));
+            box-shadow: 0 10px 30px rgba(45, 156, 219, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .option-card input[type="radio"]:checked + .option-label .option-icon,
+        .option-card input[type="radio"]:checked + .option-label .option-text,
+        .option-card input[type="radio"]:checked + .option-label .option-desc {
+            color: white;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(45, 156, 219, 0.2);
+        }
+
+        .option-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .option-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dark);
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        /* Result Section */
+        .result-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
+            border-radius: 14px;
+            border-left: 4px solid var(--primary-blue);
+            display: none;
+        }
+
+        .result-section.visible {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title h3 {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-badge {
+            background: linear-gradient(135deg, var(--success-green), var(--electric-cyan));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-display {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #E2E8F0;
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--vibrant-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        .result-label-text {
+            color: var(--text-medium);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 14px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 36px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-cyan));
+            color: white;
+            box-shadow: 0 10px 30px rgba(45, 156, 219, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(45, 156, 219, 0.45);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #F1F5F9, #E2E8F0);
+            color: var(--text-dark);
+            border: 2px solid #CBD5E1;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #E2E8F0, #CBD5E1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(45, 156, 219, 0.2);
+        }
+
+        /* Stats/Features Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+            padding-top: 35px;
+            border-top: 2px solid #F1F5F9;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px 10px;
+            background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--electric-cyan);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 14px;
+            background: linear-gradient(135deg, var(--bright-orange), var(--warning-yellow));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, var(--vibrant-purple), var(--primary-blue));
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, var(--success-green), var(--electric-cyan));
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .stat-text {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Professional Badge */
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning-yellow), var(--bright-orange));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .badge-icon {
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card {
+                padding: 40px 30px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.75rem;
+            }
+
+            .result-value {
+                font-size: 2rem;
+            }
+        }
+
+        /* Custom SweetAlert2 Styling */
+        .swal2-popup {
+            border-radius: 24px !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            padding: 2em !important;
+        }
+
+        .swal2-title {
+            font-weight: 800 !important;
+            font-size: 1.8rem !important;
+            color: var(--text-dark) !important;
+        }
+
+        .swal2-html-container {
+            font-size: 1.1rem !important;
+            font-weight: 500 !important;
+            color: var(--text-medium) !important;
+        }
+
+        .swal2-confirm {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-cyan)) !important;
+            border-radius: 12px !important;
+            font-weight: 700 !important;
+            padding: 14px 40px !important;
+            text-transform: uppercase !important;
+            font-size: 0.9rem !important;
+            letter-spacing: 0.5px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="card">
+            <div class="header">
+                <div class="pro-badge">
+                    <span class="badge-icon">⚡</span>
+                    <span>Professional Edition</span>
+                </div>
+                <h1>Array Analyzer</h1>
+                <p>Find second largest, second smallest, and prime numbers in arrays</p>
+            </div>
+
+            <form id="arrayAnalyzerForm">
+                <div class="form-group">
+                    <label for="inputArray">
+                        <span class="label-icon">🔢</span>
+                        Enter Numbers (comma-separated)
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="inputArray" 
+                            placeholder="e.g., 5, 12, 8, 3, 19, 7, 15, 2" 
+                            required
+                            autocomplete="off"
+                        >
+                        <span class="element-counter" id="elementCounter">0 elements</span>
+                    </div>
+                    <div class="info-box">
+                        <p>💡 <strong>Tip:</strong> Enter numbers separated by commas. Example: 5, 12, 8, 3, 19, 7, 15</p>
+                    </div>
+                </div>
+
+                <!-- Analysis Options -->
+                <div class="options-container">
+                    <div class="option-card">
+                        <input type="radio" id="secondLargest" name="analysisOption" value="secondLargest" checked>
+                        <label for="secondLargest" class="option-label">
+                            <div class="option-icon">🥈</div>
+                            <div class="option-text">2nd Largest</div>
+                            <div class="option-desc">Find 2nd max</div>
+                        </label>
+                    </div>
+
+                    <div class="option-card">
+                        <input type="radio" id="secondSmallest" name="analysisOption" value="secondSmallest">
+                        <label for="secondSmallest" class="option-label">
+                            <div class="option-icon">🔽</div>
+                            <div class="option-text">2nd Smallest</div>
+                            <div class="option-desc">Find 2nd min</div>
+                        </label>
+                    </div>
+
+                    <div class="option-card">
+                        <input type="radio" id="primeNumbers" name="analysisOption" value="primeNumbers">
+                        <label for="primeNumbers" class="option-label">
+                            <div class="option-icon">🎯</div>
+                            <div class="option-text">Prime Numbers</div>
+                            <div class="option-desc">Find primes</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        🔍 Analyze Array
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        🔄 Clear All
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Section -->
+            <div class="result-section" id="resultSection">
+                <div class="result-header">
+                    <div class="result-title">
+                        <h3 id="resultTitle">📊 Analysis Result:</h3>
+                    </div>
+                    <div class="result-badge" id="resultBadge">Result</div>
+                </div>
+                <div class="result-display">
+                    <div class="result-value" id="resultValue">-</div>
+                    <div class="result-label-text" id="resultLabel">Result</div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">🥈</div>
+                    <div class="stat-text">2nd Largest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔽</div>
+                    <div class="stat-text">2nd Smallest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-text">Prime Finder</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to parse input string to array of numbers
+            function parseArrayInput(input) {
+                const arr = input.split(',').map(item => {
+                    const num = parseFloat(item.trim());
+                    // to return only valid numbers not ,
+                    return isNaN(num) ? null : num;
+                });
+
+                return arr;
+            }
+
+            // Function to find second largest element
+            function findSecondLargest(arr) {
+                if (arr.length < 2) {
+                    return null;
+                }
+
+                // sort in descending order
+                const uniqueArr = arr.sort((a, b) => b - a);
+                
+                if (uniqueArr.length < 2) {
+                    return null;
+                }
+
+                return uniqueArr[1];
+            }
+
+            // Function to find second smallest element
+            function findSecondSmallest(arr) {
+                if (arr.length < 2) {
+                    return null;
+                }
+
+                // sort in ascending order
+                const uniqueArr = arr.sort((a, b) => a - b);
+                
+                if (uniqueArr.length < 2) {
+                    return null;
+                }
+
+                return uniqueArr[1];
+            }
+
+            // Function to check if a number is prime
+            function isPrime(num) {
+                // Only check positive integers greater than 1
+                if (num <= 1) {
+                    return false;
+                }
+
+                if (num === 2 || num === 3) {
+                    return true;
+                }
+
+                if (num % 2 === 0 || num % 3 === 0) {
+                    return false;
+                }
+
+                // Check divisibility by numbers of form 6k ± 1
+                for (let i = 5; i <= Math.sqrt(num); i += 6) {
+                    if (num % i === 0 || num % (i + 2) === 0) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            // Function to find all prime numbers in array
+            function findPrimeNumbers(arr) {
+                const primes = arr.filter(num => isPrime(num));
+                return primes.length > 0 ? primes : null;
+            }
+
+            // Element counter
+            $('#inputArray').on('input', function() {
+                const input = $(this).val().trim();
+                const counter = $('#elementCounter');
+                
+                if (input === '') {
+                    counter.removeClass('visible');
+                    $(this).css('border-color', '#E2E8F0');
+                    return;
+                }
+
+                const arr = parseArrayInput(input);
+                const count = arr.length;
+                
+                counter.text(count + ' element' + (count !== 1 ? 's' : '')).addClass('visible');
+
+                // Visual feedback
+                if (count > 0) {
+                    $(this).css('border-color', '#2D9CDB');
+                } else {
+                    $(this).css('border-color', '#FF6B35');
+                }
+            });
+
+            // Form submission handler
+            $('#arrayAnalyzerForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const inputText = $('#inputArray').val().trim();
+                const selectedOption = $('input[name="analysisOption"]:checked').val();
+                
+                // Validate input
+                if (inputText === '') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Input!',
+                        text: 'Please enter numbers separated by commas',
+                        confirmButtonText: 'Got it!',
+                        confirmButtonColor: '#2D9CDB',
+                        showClass: {
+                            popup: 'animate__animated animate__bounceIn'
+                        }
+                    });
+                    return;
+                }
+
+                // Parse array
+                const arr = parseArrayInput(inputText);
+
+                if (arr.length === 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input!',
+                        text: 'Please enter valid numbers separated by commas',
+                        confirmButtonColor: '#FF6B35'
+                    });
+                    return;
+                }
+
+                let result = null;
+                let resultType = '';
+                let badgeText = '';
+                let message = '';
+
+                // Perform the selected analysis
+                switch(selectedOption) {
+                    case 'secondLargest':
+                        result = findSecondLargest(arr);
+                        resultType = 'SECOND LARGEST';
+                        badgeText = '2nd Largest';
+                        
+                        if (result === null) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Not Enough Unique Elements',
+                                text: 'Array needs at least 2 unique numbers to find the second largest.',
+                                confirmButtonColor: '#2D9CDB'
+                            });
+                            return;
+                        }
+                        
+                        message = `The second largest number is <strong style="color: #2D9CDB; font-size: 1.3rem;">${result}</strong>!<br><br>Array: [${arr.join(', ')}]`;
+                        break;
+
+                    case 'secondSmallest':
+                        result = findSecondSmallest(arr);
+                        resultType = 'SECOND SMALLEST';
+                        badgeText = '2nd Smallest';
+                        
+                        if (result === null) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Not Enough Unique Elements',
+                                text: 'Array needs at least 2 unique numbers to find the second smallest.',
+                                confirmButtonColor: '#2D9CDB'
+                            });
+                            return;
+                        }
+                        
+                        message = `The second smallest number is <strong style="color: #2D9CDB; font-size: 1.3rem;">${result}</strong>!<br><br>Array: [${arr.join(', ')}]`;
+                        break;
+
+                    case 'primeNumbers':
+                        const primes = findPrimeNumbers(arr);
+                        
+                        if (primes === null) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'No Prime Numbers Found',
+                                text: 'The array does not contain any prime numbers.',
+                                confirmButtonColor: '#2D9CDB'
+                            });
+                            $('#resultValue').text('None');
+                            $('#resultLabel').text('NO PRIMES FOUND');
+                            $('#resultBadge').text('No Primes');
+                            $('#resultSection').addClass('visible');
+                            return;
+                        }
+                        
+                        result = primes.join(', ');
+                        resultType = 'PRIME NUMBERS';
+                        badgeText = `${primes.length} Prime${primes.length !== 1 ? 's' : ''}`;
+                        message = `Found <strong style="color: #2D9CDB; font-size: 1.3rem;">${primes.length}</strong> prime number${primes.length !== 1 ? 's' : ''}:<br><br><strong style="font-size: 1.2rem;">[${primes.join(', ')}]</strong>`;
+                        break;
+                }
+
+                // Display result
+                $('#resultValue').text(result);
+                $('#resultLabel').text(resultType);
+                $('#resultBadge').text(badgeText);
+                $('#resultSection').addClass('visible');
+
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: '✨ Analysis Complete!',
+                    html: `<div style="font-size: 1.1rem; line-height: 1.8;">
+                            ${message}
+                            <br><br>
+                            <div style="background: #F0F9FF; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                                <small style="color: #475569;">
+                                    Scroll down to see detailed results!
+                                </small>
+                            </div>
+                           </div>`,
+                    confirmButtonText: 'Awesome! 🎉',
+                    confirmButtonColor: '#10B981',
+                    showClass: {
+                        popup: 'animate__animated animate__bounceIn'
+                    }
+                });
+
+                // Smooth scroll to result
+                setTimeout(() => {
+                    $('#resultSection')[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 500);
+            });
+
+            // Reset button handler
+            $('#resetBtn').on('click', function() {
+                // Add fade animation
+                $('input[type="text"]').addClass('animate__animated animate__fadeOut');
+                
+                setTimeout(function() {
+                    $('#inputArray').val('');
+                    $('#elementCounter').removeClass('visible');
+                    $('#resultSection').removeClass('visible');
+                    $('input[type="text"]')
+                        .removeClass('animate__animated animate__fadeOut')
+                        .addClass('animate__animated animate__fadeIn')
+                        .css('border-color', '#E2E8F0');
+                    
+                    // Reset to second largest option
+                    $('#secondLargest').prop('checked', true);
+                    
+                    $('#inputArray').focus();
+                    
+                    setTimeout(function() {
+                        $('input[type="text"]').removeClass('animate__animated animate__fadeIn');
+                    }, 500);
+                }, 200);
+
+                // Toast notification
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: 'linear-gradient(135deg, #667EEA, #764BA2)',
+                    color: '#fff',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Form cleared! ✨'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
