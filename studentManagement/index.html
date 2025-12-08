@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Management Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-surface: #1f2937;
+      --border-subtle: #374151;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --accent: #4f46e5;
+      --accent-hover: #3730a3;
+      --success: #059669;
+      --danger: #dc2626;
+
+      --radius-card: 12px;
+      --radius-pill: 999px;
+
+      --spacing-1: 8px;
+      --spacing-2: 16px;
+      --spacing-3: 24px;
+      --spacing-4: 32px;
+      --spacing-5: 40px;
+      --spacing-6: 48px;
+      --spacing-7: 56px;
+      --spacing-8: 64px;
+
+      --input-height: 48px;
+      --button-height: 40px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-root {
+      width: 100%;
+      max-width: 1200px;
+      padding: var(--spacing-3) var(--spacing-2);
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: var(--spacing-2);
+      margin-bottom: var(--spacing-3);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+
+    .logo-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-secondary);
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background-color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: var(--spacing-3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-2);
+      gap: var(--spacing-2);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-1);
+    }
+
+    @media (max-width: 767px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      height: var(--input-height);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 0 var(--spacing-2);
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .form-control::placeholder {
+      color: #6b7280;
+      font-weight: 400;
+    }
+
+    .form-control:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .form-control.input-error {
+      border-color: var(--danger);
+      box-shadow: none;
+    }
+
+    .form-actions {
+      margin-top: var(--spacing-3);
+      display: flex;
+      gap: var(--spacing-2);
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      height: var(--button-height);
+      padding: 0 var(--spacing-2);
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-primary);
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #e5e7eb;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-0.5px);
+    }
+
+    .btn-ghost {
+      border-color: var(--border-subtle);
+      background-color: transparent;
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover {
+      background-color: rgba(55, 65, 81, 0.7);
+      transform: translateY(-0.5px);
+    }
+
+    /* Table */
+    .table-wrapper {
+      margin-top: var(--spacing-2);
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      background-color: var(--bg-secondary);
+      max-height: 540px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: var(--bg-secondary);
+    }
+
+    th, td {
+      padding: var(--spacing-1) var(--spacing-2);
+      text-align: left;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.7);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #1a1d2e;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: transparent;
+    }
+
+    tbody tr {
+      transition: background-color 0.12s ease, transform 0.08s ease;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(79, 70, 229, 0.10);
+      transform: translateY(-0.5px);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-index {
+      width: 56px;
+    }
+
+    .col-actions {
+      width: 88px;
+      text-align: right;
+    }
+
+    .cell-muted {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-CS {
+      background-color: rgba(79, 70, 229, 0.22);
+      color: #e5e7eb;
+    }
+
+    .badge-DS {
+      background-color: rgba(5, 150, 105, 0.2);
+      color: #a7f3d0;
+    }
+
+    .badge-BA {
+      background-color: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+    }
+
+    .badge-UX {
+      background-color: rgba(59, 130, 246, 0.18);
+      color: #93c5fd;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .icon-button {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+    }
+
+    .icon-button svg {
+      width: 11px;
+      height: 11px;
+      stroke-width: 2;
+    }
+
+    .icon-button.edit {
+      border-color: rgba(79, 70, 229, 0.8);
+    }
+
+    .icon-button.delete {
+      border-color: rgba(220, 38, 38, 0.8);
+    }
+
+    .icon-button.edit:hover {
+      background-color: rgba(79, 70, 229, 0.16);
+      transform: translateY(-0.5px);
+    }
+
+    .icon-button.delete:hover {
+      background-color: rgba(220, 38, 38, 0.18);
+      transform: translateY(-0.5px);
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Empty state */
+    .empty-row td {
+      text-align: center;
+      padding: var(--spacing-3) var(--spacing-2);
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Header responsive */
+    @media (max-width: 767px) {
+      .app-header {
+        justify-content: center;
+      }
+
+      .header-left {
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    /* Table → responsive cards */
+    @media (max-width: 767px) {
+      .table-wrapper {
+        max-height: none;
+        overflow: visible;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        margin: 0 var(--spacing-1) var(--spacing-2);
+        border-radius: 10px;
+        border: 1px solid var(--border-subtle);
+        overflow: hidden;
+      }
+
+      tbody tr:nth-child(even),
+      tbody tr:nth-child(odd) {
+        background-color: var(--bg-secondary);
+      }
+
+      tbody td {
+        border-bottom: 1px solid rgba(55, 65, 81, 0.7);
+        padding: 10px var(--spacing-2);
+      }
+
+      tbody td:last-child {
+        border-bottom: none;
+      }
+
+      tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+      }
+
+      .col-actions {
+        text-align: left;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-root">
+    <header class="app-header">
+      <div class="header-left" aria-label="Student Management Dashboard">
+        <div class="logo-mark" aria-hidden="true">
+          <div class="logo-dot"></div>
+        </div>
+        <div class="logo-text">Student Desk</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Form Card -->
+      <section class="card" aria-labelledby="form-title">
+        <div class="card-header">
+          <div>
+            <div class="card-title" id="form-title">Student Record</div>
+            <div class="card-subtitle" id="form-subtitle">
+              Create or update student entries. All fields are required.
+            </div>
+          </div>
+        </div>
+
+        <form id="student-form" novalidate>
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label" for="name">Full Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                class="form-control"
+                placeholder="e.g. John Doe"
+                autocomplete="off"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="studentId">Student ID</label>
+              <input
+                id="studentId"
+                name="studentId"
+                type="text"
+                class="form-control"
+                placeholder="e.g. 123456"
+                autocomplete="off"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                class="form-control"
+                placeholder="name@gmail.com"
+                autocomplete="off"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="course">Course</label>
+              <select
+                id="course"
+                name="course"
+                class="form-control"
+                required
+              >
+                <option value="">Select course</option>
+                <option value="CS">Computer Science (CS)</option>
+                <option value="DS">Data Science (DS)</option>
+                <option value="BA">Business Analytics (BA)</option>
+                <option value="UX">UX Design (UX)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" id="btn-reset">
+              Clear
+            </button>
+            <button type="submit" class="btn btn-primary" id="btn-submit">
+              Add Student
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Table Card -->
+      <section class="card" aria-labelledby="table-title">
+        <div class="card-header">
+          <div>
+            <div class="card-title" id="table-title">Students</div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table aria-label="Student table">
+            <thead>
+              <tr>
+                <th class="col-index">#</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-tbody">
+              <!-- rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    class Student {
+      constructor(id, name, email, course) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.course = course;
+      }
+    }
+
+    class Classroom {
+      constructor() {
+        this.students = [];
+      }
+
+      addStudent(student) {
+        this.students.push(student);
+      }
+
+      updateStudent(originalId, data) {
+        const idx = this.students.findIndex(s => s.id === originalId);
+        if (idx !== -1) {
+          this.students[idx].id = data.id;
+          this.students[idx].name = data.name;
+          this.students[idx].email = data.email;
+          this.students[idx].course = data.course;
+        }
+      }
+
+      deleteStudent(id) {
+        // you can also use splice after finding index
+        this.students = this.students.filter(s => s.id !== id);
+      }
+
+      existsId(id, ignoreId = null) {
+        return this.students.some(s => s.id === id && s.id !== ignoreId);
+      }
+    }
+
+    // this is for safety just like jQuery's $(document).ready()
+    document.addEventListener('DOMContentLoaded', () => {
+      const classroom = new Classroom();
+
+      // [
+      //   new Student('S-1001', 'Alice Nguyen', 'alice.nguyen@uni.edu', 'CS'),
+      //   new Student('S-1002', 'Rahul Verma', 'rahul.verma@uni.edu', 'DS'),
+      //   new Student('S-1003', 'Maria Garcia', 'maria.garcia@uni.edu', 'BA'),
+      //   new Student('S-1004', 'Jonas Lind', 'jonas.lind@uni.edu', 'UX')
+      // ].forEach(s => classroom.addStudent(s));
+
+      // DOM refs
+      const form = document.getElementById('student-form');
+      const nameInput = document.getElementById('name');
+      const idInput = document.getElementById('studentId');
+      const emailInput = document.getElementById('email');
+      const courseSelect = document.getElementById('course');
+      const btnSubmit = document.getElementById('btn-submit');
+      const btnReset = document.getElementById('btn-reset');
+      const tbody = document.getElementById('students-tbody');
+
+      let editingId = null;
+
+      // to get different bg colors for badges based on course
+      function badgeClass(course) {
+        return 'badge badge-' + course;
+      }
+
+      function validateField(input) {
+        const value = (input.value || '').trim();
+        let valid = true;
+
+        if (input === courseSelect) {
+          valid = value !== '';
+        } else if (input === emailInput) {
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          valid = emailPattern.test(value);
+        } else {
+          valid = value.length > 0;
+        }
+
+        if (!valid) {
+          input.classList.add('input-error');
+          input.setAttribute('aria-invalid', 'true');
+        } else {
+          input.classList.remove('input-error');
+          input.removeAttribute('aria-invalid');
+        }
+
+        return valid;
+      }
+
+      function validateForm() {
+        let valid = true;
+        [nameInput, idInput, emailInput, courseSelect].forEach(input => {
+          if (!validateField(input)) {
+            valid = false;
+          }
+        });
+
+        const newId = idInput.value.trim();
+        if (newId && classroom.existsId(newId, editingId)) {
+          idInput.classList.add('input-error');
+          idInput.setAttribute('aria-invalid', 'true');
+          valid = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Duplicate ID',
+            text: 'A student with this ID already exists.',
+            confirmButtonColor: '#4f46e5',
+            background: '#111827',
+            color: '#e5e7eb'
+          });
+        }
+
+        if (!valid) {
+          return false;
+        }
+        return true;
+      }
+
+      function clearForm() {
+        form.reset();
+        editingId = null;
+        btnSubmit.textContent = 'Add Student';
+        document.getElementById('form-subtitle').textContent =
+          'Create or update student entries. All fields are required.';
+        [nameInput, idInput, emailInput, courseSelect].forEach(input => {
+          input.classList.remove('input-error');
+          input.removeAttribute('aria-invalid');
+        });
+      }
+
+        function renderTable() {
+        const students = classroom.students;
+
+        // Empty? → show empty row and exit
+        if (students.length === 0) {
+            tbody.innerHTML = `
+            <tr class="empty-row">
+                <td colspan="6">No students found for the selected filter.</td>
+            </tr>
+            `;
+            return;
+        }
+
+        // Build table rows via template strings
+        tbody.innerHTML = students.map((student, idx) => `
+            <tr data-id="${student.id}">
+            <td class="col-index cell-muted" data-label="#">${idx + 1}</td>
+            <td data-label="Name">${student.name}</td>
+            <td data-label="ID" class="cell-muted">${student.id}</td>
+            <td data-label="Email" class="cell-muted">${student.email}</td>
+            <td data-label="Course">
+                <span class="${badgeClass(student.course)}">${student.course}</span>
+            </td>
+            <td class="col-actions" data-label="Actions">
+                <div class="actions">
+                <button
+                    type="button"
+                    class="icon-button edit"
+                    aria-label="Edit student"
+                    data-action="edit"
+                    data-id="${student.id}"
+                >
+                    <svg viewBox="0 0 20 20" fill="white" stroke="currentColor">
+                    <path d="M4 13.5V16h2.5l7-7-2.5-2.5-7 7z" />
+                    <path d="M11.5 5.5l2-2 2 2-2 2-2-2z" />
+                    </svg>
+                </button>
+
+                <button
+                    type="button"
+                    class="icon-button delete"
+                    aria-label="Delete student"
+                    data-action="delete"
+                    data-id="${student.id}"
+                >
+                    <svg viewBox="0 0 20 20" fill="white" stroke="currentColor">
+                    <path d="M6 7h8l-.7 8H6.7L6 7z" />
+                    <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h1A1.5 1.5 0 0 1 12 5.5V7" />
+                    <path d="M4 7h12" />
+                    </svg>
+                </button>
+                </div>
+            </td>
+            </tr>
+        `).join('');
+        }
+
+      // Form submit
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        const name = nameInput.value.trim();
+        const id = idInput.value.trim();
+        const email = emailInput.value.trim();
+        const course = courseSelect.value;
+
+        if (!editingId) {
+          const student = new Student(id, name, email, course);
+          classroom.addStudent(student);
+          Swal.fire({
+            icon: 'success',
+            title: 'Student added',
+            showConfirmButton: false,
+            timer: 1300,
+            background: '#111827',
+            color: '#e5e7eb'
+          });
+        } else {
+          classroom.updateStudent(editingId, { id, name, email, course });
+          Swal.fire({
+            icon: 'success',
+            title: 'Student updated',
+            showConfirmButton: false,
+            timer: 1300,
+            background: '#111827',
+            color: '#e5e7eb'
+          });
+        }
+
+        clearForm();
+        renderTable();
+      });
+
+      // Reset / clear
+      btnReset.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearForm();
+      });
+
+      // Table actions (edit/delete) with event delegation
+      tbody.addEventListener('click', (e) => {
+        const button = e.target.closest('.icon-button');
+        if (!button) return;
+        
+        const action = button.dataset.action;
+        const id = button.dataset.id;
+        if (!id) return;
+        
+        if (action === 'edit') {
+            console.log(button.dataset);
+          const student = classroom.students.find(s => s.id === id);
+          if (!student) return;
+
+          editingId = id;
+          nameInput.value = student.name;
+          idInput.value = student.id;
+          emailInput.value = student.email;
+          courseSelect.value = student.course;
+
+          btnSubmit.textContent = 'Update Student';
+          document.getElementById('form-subtitle').textContent =
+            'Editing existing record. Update fields and hit “Update Student”.';
+
+          [nameInput, idInput, emailInput, courseSelect].forEach(input => {
+            input.classList.remove('input-error');
+            input.removeAttribute('aria-invalid');
+          });
+
+          nameInput.focus();
+        }
+
+        if (action === 'delete') {
+          Swal.fire({
+            title: 'Delete student?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#4b5563',
+            background: '#111827',
+            color: '#e5e7eb'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              classroom.deleteStudent(id);
+              if (editingId === id) {
+                clearForm();
+              }
+              renderTable();
+              Swal.fire({
+                icon: 'success',
+                title: 'Deleted',
+                showConfirmButton: false,
+                timer: 1100,
+                background: '#111827',
+                color: '#e5e7eb'
+              });
+            }
+          });
+        }
+      });
+
+      // Initial render
+      renderTable();
+    });
+  </script>
+</body>
+</html>
