@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Countdown Timer with Sound</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 60%);
+      color: #e5e7eb;
+    }
+
+    .timer-card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      max-width: 420px;
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-card::before {
+      content: "";
+      position: absolute;
+      inset: -80px;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.12), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.12), transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.35rem;
+      letter-spacing: 0.03em;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 18px;
+    }
+
+    .inputs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      flex: 1;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 3px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 0.9rem;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .field input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+      background: rgba(17, 24, 39, 0.95);
+    }
+
+    .display {
+      text-align: center;
+      margin: 10px 0 14px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-value {
+      font-size: 2.1rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+    }
+
+    .time-labels {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    button {
+      flex: 1;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #ecfdf5;
+      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-stop {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #fffbeb;
+      box-shadow: 0 10px 20px rgba(249, 115, 22, 0.35);
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, #4b5563, #1f2937);
+      color: #e5e7eb;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.45);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      min-height: 1em;
+    }
+
+    .status.error {
+      color: #fecaca;
+    }
+
+    .celebration {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .celebration.active {
+      display: flex;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .celebration-badge {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(251, 191, 36, 0.9);
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.65);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fef3c7;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .confetti-dot {
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(220px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .timer-card {
+        margin: 0 12px;
+        padding: 20px 18px;
+      }
+      .time-value {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="timer-card">
+    <h1>Countdown Timer</h1>
+    <div class="subtitle">Set hours, minutes, seconds and hit Start.</div>
+
+    <div class="inputs">
+      <div class="field">
+        <label for="hours">Hours</label>
+        <input id="hours" type="number" min="0" inputmode="numeric" placeholder="0" />
+      </div>
+      <div class="field">
+        <label for="minutes">Minutes</label>
+        <input id="minutes" type="number" min="0" max="59" inputmode="numeric" placeholder="0" />
+      </div>
+      <div class="field">
+        <label for="seconds">Seconds</label>
+        <input id="seconds" type="number" min="0" max="59" inputmode="numeric" placeholder="0" />
+      </div>
+    </div>
+
+    <div class="display">
+      <div class="time-value" id="timeDisplay">00:00:00</div>
+      <div class="time-labels">HOURS&nbsp;&nbsp;&nbsp;MINS&nbsp;&nbsp;&nbsp;SECS</div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-start" id="btnStart">▶ Start</button>
+      <button class="btn-stop" id="btnStop" disabled>⏸ Stop</button>
+      <button class="btn-reset" id="btnReset">⟲ Reset</button>
+    </div>
+
+    <div class="status" id="statusText"></div>
+
+    <!-- Celebration overlay -->
+    <div class="celebration" id="celebration">
+      <div class="celebration-badge">
+        🎉 Time's up! Great job!
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio: provide your own tick.mp3 and celebration.mp3 in this folder -->
+  <audio id="tickAudio" src="tick.mp3" preload="auto"></audio>
+  <audio id="celebrationAudio" src="celebration.mp3" preload="auto"></audio>
+
+  <script>
+    const hoursInput = document.getElementById("hours");
+    const minutesInput = document.getElementById("minutes");
+    const secondsInput = document.getElementById("seconds");
+
+    const btnStart = document.getElementById("btnStart");
+    const btnStop = document.getElementById("btnStop");
+    const btnReset = document.getElementById("btnReset");
+
+    const timeDisplay = document.getElementById("timeDisplay");
+    const statusText = document.getElementById("statusText");
+    const celebration = document.getElementById("celebration");
+
+    const tickAudio = document.getElementById("tickAudio");
+    const celebrationAudio = document.getElementById("celebrationAudio");
+
+    let totalSeconds = 0;
+    let remainingSeconds = 0;
+    let timerId = null;
+
+    function formatTime(total) {
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      const pad = (n) => String(n).padStart(2, "0");
+      return pad(h) + ":" + pad(m) + ":" + pad(s);
+    }
+
+    function updateDisplay() {
+      timeDisplay.textContent = formatTime(remainingSeconds);
+    }
+
+    function readInputs() {
+      const h = Number(hoursInput.value) || 0;
+      const m = Number(minutesInput.value) || 0;
+      const s = Number(secondsInput.value) || 0;
+      return h * 3600 + m * 60 + s;
+    }
+
+    function validateInputs(seconds) {
+      if (seconds <= 0) {
+        statusText.textContent = "Enter a duration greater than 0.";
+        statusText.classList.add("error");
+        return false;
+      }
+      statusText.textContent = "";
+      statusText.classList.remove("error");
+      return true;
+    }
+
+    function setInputsDisabled(disabled) {
+      hoursInput.disabled = disabled;
+      minutesInput.disabled = disabled;
+      secondsInput.disabled = disabled;
+    }
+
+    function showCelebration() {
+      celebration.classList.add("active");
+      spawnConfetti();
+    }
+
+    function hideCelebration() {
+      celebration.classList.remove("active");
+      const dots = document.querySelectorAll(".confetti-dot");
+      dots.forEach((dot) => dot.remove());
+    }
+
+    function spawnConfetti() {
+      const colors = ["#f97316", "#22c55e", "#38bdf8", "#eab308", "#f472b6"];
+      for (let i = 0; i < 40; i++) {
+        const dot = document.createElement("div");
+        dot.className = "confetti-dot";
+        const size = 4 + Math.random() * 6;
+        dot.style.width = size + "px";
+        dot.style.height = size + "px";
+        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+        dot.style.left = Math.random() * 100 + "%";
+        dot.style.top = Math.random() * 40 + "%";
+        dot.style.animation = "confetti-fall 1.2s ease-out forwards";
+        dot.style.animationDelay = (Math.random() * 0.8) + "s";
+        celebration.appendChild(dot);
+      }
+    }
+
+    function playTick() {
+      // Reset and play tick; browsers require prior user interaction
+      tickAudio.currentTime = 0;
+      tickAudio.play().catch(() => {
+        // Ignore if blocked
+      });
+    }
+
+    function playCelebration() {
+      celebrationAudio.currentTime = 0;
+      celebrationAudio.play().catch(() => {});
+    }
+
+    function startTimer() {
+      if (timerId !== null) return;
+
+      totalSeconds = readInputs();
+      if (!validateInputs(totalSeconds)) {
+        return;
+      }
+      remainingSeconds = totalSeconds;
+
+      setInputsDisabled(true);
+      btnStart.disabled = true;
+      btnStop.disabled = false;
+      statusText.textContent = "Timer is running...";
+      hideCelebration();
+
+      updateDisplay();
+
+      // Play one tick instantly so user hears it right away
+      playTick();
+
+      timerId = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds > 0) {
+          playTick();
+          updateDisplay();
+        } else {
+          clearInterval(timerId);
+          timerId = null;
+          remainingSeconds = 0;
+          updateDisplay();
+          btnStart.disabled = false;
+          btnStop.disabled = true;
+          setInputsDisabled(false);
+          statusText.textContent = "Time's up!";
+          showCelebration();
+          playCelebration();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        setInputsDisabled(false);
+        statusText.textContent = "Timer paused.";
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      remainingSeconds = 0;
+      updateDisplay();
+      hoursInput.value = "";
+      minutesInput.value = "";
+      secondsInput.value = "";
+      statusText.textContent = "";
+      hideCelebration();
+    }
+
+    btnStart.addEventListener("click", startTimer);
+    btnStop.addEventListener("click", stopTimer);
+    btnReset.addEventListener("click", resetTimer);
+
+    // Keep display in sync if user edits while not running
+    [hoursInput, minutesInput, secondsInput].forEach((input) => {
+      input.addEventListener("input", () => {
+        if (timerId === null) {
+          remainingSeconds = readInputs();
+          if (remainingSeconds < 0) remainingSeconds = 0;
+          updateDisplay();
+        }
+      });
+    });
+
+    // Initial display
+    remainingSeconds = 0;
+    updateDisplay();
+  </script>
+</body>
+</html>
