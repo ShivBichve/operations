@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Same <style> as original -->
+    <style>/* Paste your entire original <style> here */</style>
+    <title>Edit Student - Student Desk</title>
+
+    <style>
+    :root {
+      --text-secondary: #d1d5db;
+      --accent: #4f46e5;
+      --accent-hover: #3730a3;
+      --success: #059669;
+      --danger: #dc2626;
+
+      --radius-card: 12px;
+      --radius-pill: 999px;
+
+      --spacing-1: 8px;
+      --spacing-2: 16px;
+      --spacing-3: 24px;
+      --spacing-4: 32px;
+      --spacing-5: 40px;
+      --spacing-6: 48px;
+      --spacing-7: 56px;
+      --spacing-8: 64px;
+
+      --input-height: 48px;
+      --button-height: 40px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #0a0e1a;
+      color: #f9fafb;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-root {
+      width: 100%;
+      max-width: 1200px;
+      padding: var(--spacing-3) var(--spacing-2);
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: var(--spacing-2);
+      margin-bottom: var(--spacing-3);
+      border-bottom: 1px solid #374151;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+
+    .logo-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #111827;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background-color: var(--accent);
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    /* Cards */
+    .card {
+      background-color: #1f2937;
+      border: 1px solid #374151;
+      border-radius: var(--radius-card);
+      padding: var(--spacing-3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-2);
+      gap: var(--spacing-2);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-1);
+    }
+
+    @media (max-width: 767px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      height: var(--input-height);
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background-color: #111827;
+      color: #f9fafb;
+      padding: 0 var(--spacing-2);
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .form-control::placeholder {
+      color: #6b7280;
+      font-weight: 400;
+    }
+
+    .form-control:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .form-control.input-error {
+      border-color: var(--danger);
+      box-shadow: none;
+    }
+
+    .form-actions {
+      margin-top: var(--spacing-3);
+      display: flex;
+      gap: var(--spacing-2);
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      height: var(--button-height);
+      padding: 0 var(--spacing-2);
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      background: transparent;
+      color: #f9fafb;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #e5e7eb;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-0.5px);
+    }
+
+    .btn-ghost {
+      border-color: #374151;
+      background-color: transparent;
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover {
+      background-color: rgba(55, 65, 81, 0.7);
+      transform: translateY(-0.5px);
+    }
+
+    /* Table */
+    .table-wrapper {
+      margin-top: var(--spacing-2);
+      border-radius: 10px;
+      border: 1px solid #374151;
+      overflow: hidden;
+      background-color: #111827;
+      max-height: 540px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #111827;
+    }
+
+    th, td {
+      padding: var(--spacing-1) var(--spacing-2);
+      text-align: left;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.7);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #1a1d2e;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: transparent;
+    }
+
+    tbody tr {
+      transition: background-color 0.12s ease, transform 0.08s ease;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(79, 70, 229, 0.10);
+      transform: translateY(-0.5px);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-index {
+      width: 56px;
+    }
+
+    .col-actions {
+      width: 88px;
+      text-align: right;
+    }
+
+    .cell-muted {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-CS {
+      background-color: rgba(79, 70, 229, 0.22);
+      color: #e5e7eb;
+    }
+
+    .badge-DS {
+      background-color: rgba(5, 150, 105, 0.2);
+      color: #a7f3d0;
+    }
+
+    .badge-BA {
+      background-color: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+    }
+
+    .badge-UX {
+      background-color: rgba(59, 130, 246, 0.18);
+      color: #93c5fd;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .icon-button {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+    }
+
+    .icon-button svg {
+      width: 11px;
+      height: 11px;
+      stroke-width: 2;
+    }
+
+    .icon-button.edit {
+      border-color: rgba(79, 70, 229, 0.8);
+    }
+
+    .icon-button.delete {
+      border-color: rgba(220, 38, 38, 0.8);
+    }
+
+    .icon-button.edit:hover {
+      background-color: rgba(79, 70, 229, 0.16);
+      transform: translateY(-0.5px);
+    }
+
+    .icon-button.delete:hover {
+      background-color: rgba(220, 38, 38, 0.18);
+      transform: translateY(-0.5px);
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Empty state */
+    .empty-row td {
+      text-align: center;
+      padding: var(--spacing-3) var(--spacing-2);
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Header responsive */
+    @media (max-width: 767px) {
+      .app-header {
+        justify-content: center;
+      }
+
+      .header-left {
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    /* Table → responsive cards */
+    @media (max-width: 767px) {
+      .table-wrapper {
+        max-height: none;
+        overflow: visible;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        margin: 0 var(--spacing-1) var(--spacing-2);
+        border-radius: 10px;
+        border: 1px solid #374151;
+        overflow: hidden;
+      }
+
+      tbody tr:nth-child(even),
+      tbody tr:nth-child(odd) {
+        background-color: #111827;
+      }
+
+      tbody td {
+        border-bottom: 1px solid rgba(55, 65, 81, 0.7);
+        padding: 10px var(--spacing-2);
+      }
+
+      tbody td:last-child {
+        border-bottom: none;
+      }
+
+      tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+      }
+
+      .col-actions {
+        text-align: left;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+
+</head>
+<body>
+    <div class="app-root">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-mark"><div class="logo-dot"></div></div>
+                <div class="logo-text">Employee Desk</div>
+            </div>
+            <div class="form-actions">
+                <a href="view.html" class="btn btn-ghost">← Back to List</a>
+            </div>
+        </header>
+
+        <main>
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Edit Employee</div>
+                        <div class="card-subtitle">Update all employee details below.</div>
+                    </div>
+                </div>
+
+                <form id="edit-form" novalidate>
+                    <input type="hidden" id="edit-id" name="editId" />
+                    
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input 
+                                id="name" 
+                                name="name" 
+                                type="text" 
+                                class="form-control" 
+                                placeholder="e.g. John Doe" 
+                                required 
+                            />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="studentId">Employee ID</label>
+                            <input 
+                                id="studentId" 
+                                name="studentId" 
+                                type="text" 
+                                class="form-control" 
+                                placeholder="e.g. 123456" 
+                                required 
+                            />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="email">Email</label>
+                            <input 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                class="form-control" 
+                                placeholder="name@gmail.com" 
+                                required 
+                            />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="course">Course</label>
+                            <select id="course" name="course" class="form-control" required>
+                                <option value="">Select course</option>
+                                <option value="CS">Computer Science (CS)</option>
+                                <option value="DS">Data Science (DS)</option>
+                                <option value="BA">Business Analytics (BA)</option>
+                                <option value="UX">UX Design (UX)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="view.html" class="btn btn-ghost">Cancel</a>
+                        
+                        <button type="submit" class="btn btn-primary">Update Employee</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const STORAGE_KEY = 'employees';
+        const EDIT_KEY = 'editingEmployeeId';
+
+        function loadStudents() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        }
+
+        function saveStudents(students) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+        }
+
+        function clearEditState() {
+            localStorage.removeItem(EDIT_KEY);
+        }
+
+        function loadStudentData() {
+            const editId = localStorage.getItem(EDIT_KEY);
+            
+            if (!editId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No Selection',
+                    text: 'No employee selected'
+                }).then(() => {
+                    window.location.href = 'view.html';
+                });
+                return;
+            }
+
+            const students = loadStudents();
+            const student = students.find(s => s.id === editId);
+            
+            if (!student) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Not Found',
+                    text: 'Employee not found'
+                }).then(() => {
+                    clearEditState();
+                    window.location.href = 'view.html';
+                });
+                return;
+            }
+
+            document.getElementById('edit-id').value = editId;
+            document.getElementById('name').value = student.name || '';
+            document.getElementById('studentId').value = student.id || '';
+            document.getElementById('email').value = student.email || '';
+            document.getElementById('course').value = student.course || '';
+        }
+
+        function saveUpdatedStudent() {
+            const originalId = document.getElementById('edit-id').value;
+            const updatedData = {
+                id: document.getElementById('studentId').value.trim(),
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                course: document.getElementById('course').value
+            };
+
+            let students = loadStudents();
+            const index = students.findIndex(s => s.id === originalId);
+            
+            if (index === -1) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error finding employee'
+                });
+                return false;
+            }
+
+            students[index] = updatedData;
+            saveStudents(students);
+            clearEditState();
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStudentData);
+
+        document.getElementById('edit-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (saveUpdatedStudent()) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated',
+                    text: 'Employee updated successfully!'
+                }).then(() => {
+                    window.location.href = 'view.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

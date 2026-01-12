@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Countdown</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        input {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-top: 15px;
+            letter-spacing: 3px;
+        }
+
+        h1 {
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card p-4 text-center">
+                <h1 class="mb-4">Simple Countdown</h1>
+
+                <div class="row g-2 mb-3">
+                    <div class="col">
+                        <input type="number" id="hours" class="form-control" placeholder="Hours">
+                    </div>
+                    <div class="col">
+                        <input type="number" id="minutes" class="form-control" placeholder="Minutes">
+                    </div>
+                    <div class="col">
+                        <input type="number" id="seconds" class="form-control" placeholder="Seconds">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-center mb-3">
+                    <button class="btn btn-success btn-lg btn-start">Start</button>
+                    <button class="btn btn-warning btn-lg btn-stop">Stop</button>
+                    <button class="btn btn-danger btn-lg btn-reset">Reset</button>
+                </div>
+
+                <div class="count"></div>
+            </div>
+        </div>
+
+        <audio src="./instrumental-para-usar-em-videos-ou-para-estudar-improvisacao-148305.mp3" loop></audio>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+<script>
+    const button = document.querySelector('.btn-start');
+    const stopButton = document.querySelector('.btn-stop');
+    const resetButton = document.querySelector('.btn-reset');
+    const audio = document.querySelector('audio');
+    
+    const countDiv = document.querySelector('.count');
+    
+    let totalSeconds = 0;
+    let confettiInterval;
+    let countdownInterval = null;
+
+    const quotes = [
+        "Time is what we want most, but what we use worst.",
+        "Don’t watch the clock; do what it does. Keep going.",
+        "Your time is limited, so don’t waste it living someone else’s life.",
+        "The key is in not spending time, but in investing it.",
+        "Lost time is never found again."
+    ];
+
+    function showRandomQuote() {
+        const random = Math.floor(Math.random() * quotes.length);
+        countDiv.innerHTML += `<div class="mt-3 fs-5">"${quotes[random]}"</div>`;
+    }
+
+    function startConfetti() {
+        confettiInterval = setInterval(() => {
+            confetti({
+                particleCount: 50,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }, 800);
+    }
+
+    function stopConfetti() {
+        clearInterval(confettiInterval);
+    }
+
+    button.addEventListener("click", () => {
+        if (countdownInterval) return;
+
+        audio.currentTime = 0;
+        audio.pause();
+        stopConfetti();
+        countDiv.innerHTML = "";
+
+        if (totalSeconds === 0) {
+            const hoursInput = Number(document.querySelector('#hours').value);
+            const minutesInput = Number(document.querySelector('#minutes').value);
+            const secondsInput = Number(document.querySelector('#seconds').value);
+            totalSeconds = (hoursInput * 3600) + (minutesInput * 60) + secondsInput;
+        }
+
+        countdownInterval = setInterval(() => {
+            if (totalSeconds < 0) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+                startConfetti();
+                showRandomQuote();
+                totalSeconds = 0;
+                audio.play();
+                return;
+            }
+
+            const displayHours = Math.floor(totalSeconds / 3600);
+            const displayMinutes = Math.floor((totalSeconds % 3600) / 60);
+            const displaySeconds = totalSeconds % 60;
+
+            countDiv.innerHTML = 
+                `${String(displayHours).padStart(2,'0')} : 
+                 ${String(displayMinutes).padStart(2,'0')} : 
+                 ${String(displaySeconds).padStart(2,'0')}`;
+
+            totalSeconds--;
+        }, 1000);
+    });
+
+    stopButton.addEventListener("click", () => {
+        clearInterval(countdownInterval);
+        stopConfetti();
+        audio.pause();
+        audio.currentTime = 0;
+        countdownInterval = null;
+    });
+
+    resetButton.addEventListener("click", () => {
+        clearInterval(countdownInterval);
+        stopConfetti();
+        countdownInterval = null;
+        totalSeconds = 0;
+        countDiv.innerHTML = "";
+        document.querySelector('#hours').value = "";
+        document.querySelector('#minutes').value = "";
+        document.querySelector('#seconds').value = "";
+        audio.pause();
+        audio.currentTime = 0;
+    });
+</script>
+
+</body>
+</html>
